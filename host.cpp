@@ -7,7 +7,7 @@
 #include <cmath>
 
 
-extern "C" void top(float *input_data, float *output_data);
+extern "C" void dut(float *input_data, float *output_data);
 
 static const int B  = 4;
 static const int T  = 16;
@@ -38,7 +38,7 @@ int main() {
   }
 
 
-  top(input.data(), output.data());
+  dut(input.data(), output.data());
 
 
   {

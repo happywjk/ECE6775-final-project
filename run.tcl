@@ -1,31 +1,36 @@
-# Copyright Allo authors. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
-
 #=============================================================================
 # run.tcl 
 #=============================================================================
+# @brief: A Tcl script for synthesizing the baseline digit recongnition design.
+
 # Project name
 set hls_prj out.prj
 
 # Open/reset the project
 open_project ${hls_prj} -reset
 
-
-# Top function of the design is "top"
-set_top top
+# Top function of the design is "dut"
+set_top dut
 
 # Add design and testbench files
-add_files flash_atten.cpp
-add_files -tb host.cpp -cflags "-std=gnu++0x"
+add_files flash_atten_baseline.cpp -cflags "-std=c++11"
+add_files -tb host.cpp -cflags "-std=c++11"
 open_solution "solution1"
 
-# Target device is u280
-set_part {xcu280-fsvh2892-2L-e}
+# Use Zynq device
+set_part {xc7z020clg484-1}
 
-# Target frequency
-create_clock -period 3.33
+# Target clock period is 10ns
+create_clock -period 10
 
-# Run HLS
+### You can insert your own directives here ###
+
+############################################
+
+# Simulate the C++ design
 csim_design -O
-
+# Synthesize the design
+csynth_design
+# Co-simulate the design
+#cosim_design
 exit
