@@ -33,10 +33,9 @@ int main() {
   std::cout << "  HEAD_DIM        = " << HEAD_DIM << std::endl;
   std::cout << "========================================" << std::endl;
 
-  // ===== 关键改动：使用静态数组，不用new =====
-  static float input_data[INPUT_SIZE];   // ← 静态分配
-  static float output_data[OUTPUT_SIZE]; // ← 静态分配
-  static float golden_data[OUTPUT_SIZE]; // ← 静态分配
+  static float input_data[INPUT_SIZE];   // 
+  static float output_data[OUTPUT_SIZE]; // 
+  static float golden_data[OUTPUT_SIZE]; // 
 
   // Initialize output to zero
   for (int i = 0; i < OUTPUT_SIZE; i++) {

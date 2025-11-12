@@ -135,10 +135,9 @@ static void store_output(
   }
 }
 
-// Top function - 改成数组参数
 void top(
-  float input_data[INPUT_SIZE],   // ← 固定大小数组
-  float output_data[OUTPUT_SIZE]  // ← 固定大小数组
+  float input_data[INPUT_SIZE],  
+  float output_data[OUTPUT_SIZE]  
 ) {
 #pragma HLS INTERFACE ap_ctrl_hs port=return
 

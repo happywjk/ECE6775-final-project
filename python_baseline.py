@@ -68,5 +68,6 @@ def test_batchnorm_layer():
 
     print("Generated golden.data for HLS testbench")
 
+
 if __name__ == "__main__":
     test_batchnorm_layer()

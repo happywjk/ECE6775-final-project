@@ -45,7 +45,6 @@ clean:
 	rm -rf vivado_hls.log
 	rm -rf *~
 	@echo "Clean complete!"
-
 # Help message
 help:
 	@echo "Flash Attention HLS Makefile"

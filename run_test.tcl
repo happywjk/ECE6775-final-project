@@ -13,6 +13,7 @@ open_solution "solution1"
 set_part {xc7z020clg484-1}
 create_clock -period 10 -name default
 
+
 # Run C Simulation
 csim_design
 
