@@ -3,6 +3,10 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 def test_batchnorm_layer():
+
+    torch.manual_seed(42)
+    np.random.seed(42)
+    
     # Parameters for small test size
     batch_size, context_length,hiddensize, num_heads = 4, 16, 64, 4
     X = torch.randn(batch_size, context_length, 3*hiddensize)
@@ -55,6 +59,14 @@ def test_batchnorm_layer():
     mean_diff = np.mean(diff)
     print(f"Maximum absolute difference: {max_diff}")
     print(f"Mean absolute difference: {mean_diff}")
+
+    attention_reordered = attention.transpose(1, 2)  # (B, nh, T, hd) -> (B, T, nh, hd)
+    golden_flat = attention_reordered.flatten()
+    with open("golden.data", "w") as f:
+        for val in golden_flat:
+            f.write(f"{val}\n")
+
+    print("Generated golden.data for HLS testbench")
 
 if __name__ == "__main__":
     test_batchnorm_layer()

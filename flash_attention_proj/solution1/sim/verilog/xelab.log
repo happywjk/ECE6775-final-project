@@ -1,0 +1,69 @@
+INFO: [XSIM 43-3496] Using init file passed via -initfile option "/opt/xilinx/Vivado/2019.2/data/xsim/ip/xsim_ip.ini".
+Vivado Simulator 2019.2
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: /opt/xilinx/Vivado/2019.2/bin/unwrapped/lnx64.o/xelab xil_defaultlib.apatb_top_top glbl -prj top.prj -L smartconnect_v1_0 -L axi_protocol_checker_v1_1_12 -L axi_protocol_checker_v1_1_13 -L axis_protocol_checker_v1_1_11 -L axis_protocol_checker_v1_1_12 -L xil_defaultlib -L unisims_ver -L xpm --initfile /opt/xilinx/Vivado/2019.2/data/xsim/ip/xsim_ip.ini --lib ieee_proposed=./ieee_proposed -s top 
+Multi-threading is on. Using 6 slave threads.
+Determining compilation order of HDL files.
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/glbl.v" into library work
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top.autotb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module apatb_top_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/AESL_automem_input_data.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module AESL_automem_input_data
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/AESL_automem_output_data.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module AESL_automem_output_data
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/load_and_rearrange_q.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module load_and_rearrange_q
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/compute_attention.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module compute_attention
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/store_output.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module store_output
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_faddfsub_32nsbkb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_faddfsub_32nsbkb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_fadd_32ns_32ncud.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_fadd_32ns_32ncud
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_fmul_32ns_32ndEe.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_fmul_32ns_32ndEe
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_fdiv_32ns_32neOg.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_fdiv_32ns_32neOg
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_fcmp_32ns_32nfYi.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_fcmp_32ns_32nfYi
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_fexp_32ns_32ng8j.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_fexp_32ns_32ng8j
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_mux_42_32_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_mux_42_32_1_1
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_mux_164_32_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_mux_164_32_1_1
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_Q_0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_Q_0_ram
+INFO: [VRFC 10-311] analyzing module top_Q_0
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_V_0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_V_0_ram
+INFO: [VRFC 10-311] analyzing module top_V_0
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/top_OUT_0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_OUT_0_ram
+INFO: [VRFC 10-311] analyzing module top_OUT_0
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/ip/xil_defaultlib/top_ap_faddfsub_3_full_dsp_32.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'top_ap_faddfsub_3_full_dsp_32'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/ip/xil_defaultlib/top_ap_fadd_3_full_dsp_32.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'top_ap_fadd_3_full_dsp_32'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/ip/xil_defaultlib/top_ap_fmul_2_max_dsp_32.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'top_ap_fmul_2_max_dsp_32'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/ip/xil_defaultlib/top_ap_fdiv_14_no_dsp_32.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'top_ap_fdiv_14_no_dsp_32'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/ip/xil_defaultlib/top_ap_fcmp_0_no_dsp_32.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'top_ap_fcmp_0_no_dsp_32'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/sim/verilog/ip/xil_defaultlib/top_ap_fexp_6_med_dsp_32.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'top_ap_fexp_6_med_dsp_32'
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3499] library name 'floating_point_v7_1_9' of instantiated unit conflicts with visible identifier [ip/xil_defaultlib/top_ap_faddfsub_3_full_dsp_32.vhd:206]
+WARNING: [VRFC 10-3499] library name 'floating_point_v7_1_9' of instantiated unit conflicts with visible identifier [ip/xil_defaultlib/top_ap_fadd_3_full_dsp_32.vhd:201]
+WARNING: [VRFC 10-3499] library name 'floating_point_v7_1_9' of instantiated unit conflicts with visible identifier [ip/xil_defaultlib/top_ap_fmul_2_max_dsp_32.vhd:201]
+WARNING: [VRFC 10-3499] library name 'floating_point_v7_1_9' of instantiated unit conflicts with visible identifier [ip/xil_defaultlib/top_ap_fdiv_14_no_dsp_32.vhd:201]
+WARNING: [VRFC 10-3499] library name 'floating_point_v7_1_9' of instantiated unit conflicts with visible identifier [ip/xil_defaultlib/top_ap_fcmp_0_no_dsp_32.vhd:200]
+WARNING: [VRFC 10-3499] library name 'floating_point_v7_1_9' of instantiated unit conflicts with visible identifier [ip/xil_defaultlib/top_ap_fexp_6_med_dsp_32.vhd:196]
+Completed static elaboration
+ERROR: [XSIM 43-3316] Signal SIGSEGV received.

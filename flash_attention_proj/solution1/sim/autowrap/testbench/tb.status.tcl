@@ -1,0 +1,1 @@
+set ::AESL_AUTOSIM::gTopFileName /home/wl764/ece6775/ECE6775-final-project/flash_attention_proj/solution1/./sim/autowrap/testbench/flash_atten.cpp_pre.cpp.tb.cpp

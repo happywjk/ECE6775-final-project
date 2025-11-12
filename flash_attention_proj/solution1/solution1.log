@@ -1,0 +1,260 @@
+==============================================================
+Vivado(TM) HLS - High-Level Synthesis from C, C++ and SystemC v2019.2 (64-bit)
+Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [HLS 200-10] Setting target device to 'xc7z020-clg484-1'
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [SCHED 204-61] Option 'relax_ii_for_timing' is enabled, will increase II to preserve clock frequency constraints.
+INFO: [HLS 200-10] Analyzing design file 'flash_atten.cpp' ... 
+INFO: [HLS 200-111] Finished Linking Time (s): cpu = 00:00:41 ; elapsed = 00:00:44 . Memory (MB): peak = 1175.152 ; gain = 530.125 ; free physical = 25978 ; free virtual = 33348
+INFO: [HLS 200-111] Finished Checking Pragmas Time (s): cpu = 00:00:41 ; elapsed = 00:00:44 . Memory (MB): peak = 1175.152 ; gain = 530.125 ; free physical = 25978 ; free virtual = 33348
+INFO: [HLS 200-10] Starting code transformations ...
+INFO: [HLS 200-111] Finished Standard Transforms Time (s): cpu = 00:00:42 ; elapsed = 00:00:46 . Memory (MB): peak = 1178.484 ; gain = 533.457 ; free physical = 25905 ; free virtual = 33290
+INFO: [HLS 200-10] Checking synthesizability ...
+INFO: [XFORM 203-602] Inlining function 'exp_reduce_::exp' into 'hls::expf' (/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20) automatically.
+INFO: [XFORM 203-602] Inlining function 'hls::expf' into 'fast_exp' (flash_atten.cpp:22) automatically.
+INFO: [XFORM 203-602] Inlining function 'hls::sqrtf' into 'compute_attention' (flash_atten.cpp:76) automatically.
+INFO: [XFORM 203-602] Inlining function 'fast_exp' into 'compute_attention' (flash_atten.cpp:99) automatically.
+INFO: [HLS 200-111] Finished Checking Synthesizability Time (s): cpu = 00:00:42 ; elapsed = 00:00:46 . Memory (MB): peak = 1178.484 ; gain = 533.457 ; free physical = 25889 ; free virtual = 33274
+INFO: [XFORM 203-502] Unrolling all sub-loops inside loop 'Loop-1.1.1' (flash_atten.cpp:127) in function 'store_output' for pipelining.
+INFO: [XFORM 203-502] Unrolling all sub-loops inside loop 'Loop-1.1.1.1' (flash_atten.cpp:84) in function 'compute_attention' for pipelining.
+INFO: [XFORM 203-502] Unrolling all sub-loops inside loop 'Loop-1.1' (flash_atten.cpp:37) in function 'load_and_rearrange_qkv' for pipelining.
+INFO: [HLS 200-489] Unrolling loop 'Loop-1.1.1.1' (flash_atten.cpp:129) in function 'store_output' completely with a factor of 16.
+INFO: [HLS 200-489] Unrolling loop 'Loop-1.1.1.1.1' (flash_atten.cpp:87) in function 'compute_attention' completely with a factor of 16.
+INFO: [HLS 200-489] Unrolling loop 'Loop-1.1.1.3' (flash_atten.cpp:105) in function 'compute_attention' completely with a factor of 16.
+INFO: [HLS 200-489] Unrolling loop 'Loop-1.1.1' (flash_atten.cpp:39) in function 'load_and_rearrange_qkv' completely with a factor of 192.
+INFO: [XFORM 203-101] Partitioning array 'Q'  in dimension 2 completely.
+INFO: [XFORM 203-101] Partitioning array 'K'  in dimension 2 completely.
+INFO: [XFORM 203-101] Partitioning array 'V'  in dimension 2 completely.
+INFO: [XFORM 203-101] Partitioning array 'OUT'  in dimension 2 completely.
+INFO: [XFORM 203-101] Partitioning array 'attn_row' (flash_atten.cpp:77) in dimension 1 completely.
+INFO: [XFORM 203-602] Inlining function 'exp_reduce_::exp' into 'hls::expf' (/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20) automatically.
+INFO: [XFORM 203-602] Inlining function 'hls::expf' into 'fast_exp' (flash_atten.cpp:22) automatically.
+INFO: [XFORM 203-602] Inlining function 'fast_exp' into 'compute_attention' (flash_atten.cpp:99) automatically.
+INFO: [HLS 200-111] Finished Pre-synthesis Time (s): cpu = 00:00:44 ; elapsed = 00:00:47 . Memory (MB): peak = 1178.484 ; gain = 533.457 ; free physical = 25832 ; free virtual = 33220
+INFO: [XFORM 203-541] Flattening a loop nest 'Loop-1.1' (flash_atten.cpp:126:19) in function 'store_output'.
+INFO: [XFORM 203-541] Flattening a loop nest 'Loop-1' (flash_atten.cpp:125:16) in function 'store_output'.
+INFO: [XFORM 203-541] Flattening a loop nest 'Loop-1' (flash_atten.cpp:36:16) in function 'load_and_rearrange_qkv'.
+WARNING: [XFORM 203-542] Cannot flatten a loop nest 'Loop-1.1.1' (flash_atten.cpp:82:22) in function 'compute_attention' : 
+
+more than one sub loop.
+INFO: [XFORM 203-541] Flattening a loop nest 'Loop-1.1' (flash_atten.cpp:81:19) in function 'compute_attention'.
+INFO: [XFORM 203-541] Flattening a loop nest 'Loop-1' (flash_atten.cpp:80:16) in function 'compute_attention'.
+WARNING: [XFORM 203-631] Renaming function 'load_and_rearrange_qkv' to 'load_and_rearrange_q' (flash_atten.cpp:36:34)
+INFO: [HLS 200-472] Inferring partial write operation for 'Q.0' (flash_atten.cpp:47:11)
+INFO: [HLS 200-472] Inferring partial write operation for 'K.0' (flash_atten.cpp:52:11)
+INFO: [HLS 200-472] Inferring partial write operation for 'V.0' (flash_atten.cpp:57:11)
+INFO: [HLS 200-472] Inferring partial write operation for 'OUT.0' (flash_atten.cpp:113:11)
+INFO: [HLS 200-111] Finished Architecture Synthesis Time (s): cpu = 00:00:45 ; elapsed = 00:00:49 . Memory (MB): peak = 1303.152 ; gain = 658.125 ; free physical = 25793 ; free virtual = 33182
+INFO: [HLS 200-10] Starting hardware synthesis ...
+INFO: [HLS 200-10] Synthesizing 'top' ...
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'load_and_rearrange_q' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1'.
+WARNING: [SCHED 204-69] Unable to schedule 'load' operation ('input_data_load_2', flash_atten.cpp:41) on array 'input_data' due to limited memory ports. Please consider using a memory core with more ports or partitioning the array 'input_data'.
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 96, Depth = 98.
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111]  Elapsed time: 52.5 seconds; current allocated memory: 283.793 MB.
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111]  Elapsed time: 1.39 seconds; current allocated memory: 288.420 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'compute_attention' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.1'.
+WARNING: [SCHED 204-69] Unable to schedule 'load' operation ('Q_0_load_2', flash_atten.cpp:89) on array 'Q_0' due to limited memory ports. Please consider using a memory core with more ports or partitioning the array 'Q_0'.
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 8, Depth = 92.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.2'.
+WARNING: [SCHED 204-68] The II Violation in module 'compute_attention' (Loop: Loop 1.2): Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 0)
+   between 'phi' operation ('attn_row[15]') with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) and 'phi' operation ('attn_row_15_5', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('sum_exp', flash_atten.cpp:101) and 'fadd' operation ('sum_exp', flash_atten.cpp:101).
+WARNING: [SCHED 204-68] The II Violation in module 'compute_attention' (Loop: Loop 1.2): Unable to enforce a carried dependence constraint (II = 2, distance = 1, offset = 0)
+   between 'phi' operation ('attn_row[15]') with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) and 'phi' operation ('attn_row_15_5', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('sum_exp', flash_atten.cpp:101) and 'fadd' operation ('sum_exp', flash_atten.cpp:101).
+WARNING: [SCHED 204-68] The II Violation in module 'compute_attention' (Loop: Loop 1.2): Unable to enforce a carried dependence constraint (II = 3, distance = 1, offset = 0)
+   between 'phi' operation ('attn_row[15]') with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) and 'phi' operation ('attn_row_15_5', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('sum_exp', flash_atten.cpp:101) and 'fadd' operation ('sum_exp', flash_atten.cpp:101).
+WARNING: [SCHED 204-68] The II Violation in module 'compute_attention' (Loop: Loop 1.2): Unable to enforce a carried dependence constraint (II = 10, distance = 1, offset = 0)
+   between 'phi' operation ('attn_row[15]') with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) and 'phi' operation ('attn_row_15_5', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 11, Depth = 17.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.3'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_s', flash_atten.cpp:111) and 'fadd' operation ('acc_s', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_s', flash_atten.cpp:111) and 'fadd' operation ('acc_s', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_s', flash_atten.cpp:111) and 'fadd' operation ('acc_s', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_s', flash_atten.cpp:111) and 'fadd' operation ('acc_s', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.4'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_1', flash_atten.cpp:111) and 'fadd' operation ('acc_1', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_1', flash_atten.cpp:111) and 'fadd' operation ('acc_1', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_1', flash_atten.cpp:111) and 'fadd' operation ('acc_1', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_1', flash_atten.cpp:111) and 'fadd' operation ('acc_1', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.5'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_2', flash_atten.cpp:111) and 'fadd' operation ('acc_2', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_2', flash_atten.cpp:111) and 'fadd' operation ('acc_2', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_2', flash_atten.cpp:111) and 'fadd' operation ('acc_2', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_2', flash_atten.cpp:111) and 'fadd' operation ('acc_2', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.6'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_3', flash_atten.cpp:111) and 'fadd' operation ('acc_3', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_3', flash_atten.cpp:111) and 'fadd' operation ('acc_3', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_3', flash_atten.cpp:111) and 'fadd' operation ('acc_3', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_3', flash_atten.cpp:111) and 'fadd' operation ('acc_3', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.7'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_4', flash_atten.cpp:111) and 'fadd' operation ('acc_4', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_4', flash_atten.cpp:111) and 'fadd' operation ('acc_4', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_4', flash_atten.cpp:111) and 'fadd' operation ('acc_4', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_4', flash_atten.cpp:111) and 'fadd' operation ('acc_4', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.8'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_5', flash_atten.cpp:111) and 'fadd' operation ('acc_5', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_5', flash_atten.cpp:111) and 'fadd' operation ('acc_5', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_5', flash_atten.cpp:111) and 'fadd' operation ('acc_5', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_5', flash_atten.cpp:111) and 'fadd' operation ('acc_5', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.9'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_6', flash_atten.cpp:111) and 'fadd' operation ('acc_6', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_6', flash_atten.cpp:111) and 'fadd' operation ('acc_6', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_6', flash_atten.cpp:111) and 'fadd' operation ('acc_6', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_6', flash_atten.cpp:111) and 'fadd' operation ('acc_6', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.10'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_7', flash_atten.cpp:111) and 'fadd' operation ('acc_7', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_7', flash_atten.cpp:111) and 'fadd' operation ('acc_7', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_7', flash_atten.cpp:111) and 'fadd' operation ('acc_7', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_7', flash_atten.cpp:111) and 'fadd' operation ('acc_7', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.11'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_8', flash_atten.cpp:111) and 'fadd' operation ('acc_8', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_8', flash_atten.cpp:111) and 'fadd' operation ('acc_8', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_8', flash_atten.cpp:111) and 'fadd' operation ('acc_8', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_8', flash_atten.cpp:111) and 'fadd' operation ('acc_8', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.12'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_9', flash_atten.cpp:111) and 'fadd' operation ('acc_9', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_9', flash_atten.cpp:111) and 'fadd' operation ('acc_9', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_9', flash_atten.cpp:111) and 'fadd' operation ('acc_9', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_9', flash_atten.cpp:111) and 'fadd' operation ('acc_9', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.13'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_10', flash_atten.cpp:111) and 'fadd' operation ('acc_10', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_10', flash_atten.cpp:111) and 'fadd' operation ('acc_10', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_10', flash_atten.cpp:111) and 'fadd' operation ('acc_10', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_10', flash_atten.cpp:111) and 'fadd' operation ('acc_10', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.14'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_11', flash_atten.cpp:111) and 'fadd' operation ('acc_11', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_11', flash_atten.cpp:111) and 'fadd' operation ('acc_11', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_11', flash_atten.cpp:111) and 'fadd' operation ('acc_11', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_11', flash_atten.cpp:111) and 'fadd' operation ('acc_11', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.15'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_12', flash_atten.cpp:111) and 'fadd' operation ('acc_12', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_12', flash_atten.cpp:111) and 'fadd' operation ('acc_12', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_12', flash_atten.cpp:111) and 'fadd' operation ('acc_12', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_12', flash_atten.cpp:111) and 'fadd' operation ('acc_12', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.16'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_13', flash_atten.cpp:111) and 'fadd' operation ('acc_13', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_13', flash_atten.cpp:111) and 'fadd' operation ('acc_13', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_13', flash_atten.cpp:111) and 'fadd' operation ('acc_13', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_13', flash_atten.cpp:111) and 'fadd' operation ('acc_13', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.17'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_14', flash_atten.cpp:111) and 'fadd' operation ('acc_14', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_14', flash_atten.cpp:111) and 'fadd' operation ('acc_14', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_14', flash_atten.cpp:111) and 'fadd' operation ('acc_14', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_14', flash_atten.cpp:111) and 'fadd' operation ('acc_14', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1.18'.
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 1)
+   between 'fadd' operation ('acc_15', flash_atten.cpp:111) and 'fadd' operation ('acc_15', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 2)
+   between 'fadd' operation ('acc_15', flash_atten.cpp:111) and 'fadd' operation ('acc_15', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 3)
+   between 'fadd' operation ('acc_15', flash_atten.cpp:111) and 'fadd' operation ('acc_15', flash_atten.cpp:111).
+WARNING: [SCHED 204-68] Unable to enforce a carried constraint (II = 4)
+   between 'fadd' operation ('acc_15', flash_atten.cpp:111) and 'fadd' operation ('acc_15', flash_atten.cpp:111).
+INFO: [SCHED 204-61] Pipelining result : Target II = 1, Final II = 5, Depth = 13.
+WARNING: [SCHED 204-21] Estimated clock period (19.761ns) exceeds the target (target clock period: 10ns, clock uncertainty: 1.25ns, effective delay budget: 8.75ns).
+WARNING: [SCHED 204-21] The critical path in module 'compute_attention' consists of the following:
+	'fexp' operation ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) [641]  (8.67 ns)
+	multiplexor before 'phi' operation ('attn_row[15]') with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) [674]  (1.77 ns)
+	'phi' operation ('attn_row[15]') with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) [674]  (0 ns)
+	'phi' operation ('attn_row_15_5', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) with incoming values : ('attn_row[0]', flash_atten.cpp:91) ('attn_row[0]', /wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/common/hls_exp_float.cpp:16->/wrk/2019.2/continuous/2019_11_06_2708876/src/products/hls/hls_lib/hlsmath/src/c++/expfloat.cpp:20->flash_atten.cpp:22->flash_atten.cpp:99) [613]  (0 ns)
+	'mux' operation ('tmp_52', flash_atten.cpp:99) [639]  (2.06 ns)
+	'fsub' operation ('x', flash_atten.cpp:99) [640]  (7.26 ns)

@@ -1,0 +1,42 @@
+INFO: [SIM 2] *************** CSIM start ***************
+INFO: [SIM 4] CSIM will launch GCC as the compiler.
+   Compiling ../../../../flash_atten_test.cpp in debug mode
+   Compiling ../../../../flash_atten.cpp in debug mode
+   Generating csim.exe
+========================================
+Flash Attention Testbench
+========================================
+Configuration:
+  BATCH_SIZE      = 4
+  CONTEXT_LENGTH  = 16
+  HIDDEN_SIZE     = 64
+  NUM_HEADS       = 4
+  HEAD_DIM        = 16
+========================================
+
+[Step 1] Reading input data from 'input.data'...
+  Successfully read 12288 input values.
+  First 5 values: 1.9269 1.4873 0.9007 -2.1055 0.6784 
+
+[Step 2] Running Flash Attention HLS design...
+  Design execution completed.
+  First 5 output values: 0.4508 0.0583 -0.0648 -0.6239 0.3673 
+
+[Step 3] Writing output data to 'output.data'...
+  Successfully wrote 4096 output values.
+
+[Step 4] Checking for golden reference...
+  Found 'golden.data', performing comparison...
+
+  Comparison Results:
+    Total mismatches: 0 / 4096 (0.00%)
+    Max absolute error: 4.7684e-07
+    Average absolute error: 4.5008e-08
+
+  ✓ TEST PASSED! All values match within tolerance.
+
+========================================
+Testbench completed successfully!
+========================================
+INFO: [SIM 1] CSim done with 0 errors.
+INFO: [SIM 3] *************** CSIM finish ***************
