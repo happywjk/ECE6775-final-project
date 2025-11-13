@@ -18,8 +18,7 @@ const int THREE_H         = 3 * HIDDEN_SIZE;
 const int INPUT_SIZE  = BATCH_SIZE * CONTEXT_LENGTH * THREE_H;      // 12288
 const int OUTPUT_SIZE = BATCH_SIZE * CONTEXT_LENGTH * NUM_HEADS * HEAD_DIM;  // 4096
 
-// 声明top函数
-void top(float input_data[INPUT_SIZE], float output_data[OUTPUT_SIZE]);
+extern "C" void top(float input_data[INPUT_SIZE], float output_data[OUTPUT_SIZE]);
 
 int main() {
   std::cout << "========================================" << std::endl;

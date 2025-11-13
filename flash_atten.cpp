@@ -24,7 +24,7 @@ static inline float fast_exp(float x) {
 
 // Load and rearrange X[B,T,3H] into local buffers Q/K/V[B][NH][T][HD]
 static void load_and_rearrange_qkv(
-    const float input_data[INPUT_SIZE],  // ← 改成数组
+    const float input_data[INPUT_SIZE],  
     float Q[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM],
     float K[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM],
     float V[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM]) {
@@ -119,8 +119,9 @@ static void compute_attention(
 
 // Store out[B,NH,T,HD] back to flattened output_data[B,T,NH,HD]
 static void store_output(
-    const float out[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM],
-    float output_data[OUTPUT_SIZE]) {  // ← 改成数组
+    //const float out[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM],
+    float out[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM],
+    float output_data[OUTPUT_SIZE]) {  
 #pragma HLS INLINE off
   for (int b = 0; b < BATCH_SIZE; ++b) {
     for (int t = 0; t < CONTEXT_LENGTH; ++t) {
@@ -135,11 +136,15 @@ static void store_output(
   }
 }
 
-void top(
+extern "C" void top(
   float input_data[INPUT_SIZE],  
   float output_data[OUTPUT_SIZE]  
 ) {
-#pragma HLS INTERFACE ap_ctrl_hs port=return
+// void top(
+//   float input_data[INPUT_SIZE],  
+//   float output_data[OUTPUT_SIZE]  
+// ) {
+// #pragma HLS INTERFACE ap_ctrl_hs port=return
 
   static float Q[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
   static float K[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];

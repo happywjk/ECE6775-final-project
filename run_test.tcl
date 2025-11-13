@@ -1,5 +1,5 @@
 # Create project
-open_project flash_attention_proj
+open_project flash_attention_proj -reset
 set_top top
 
 # Add files
@@ -9,7 +9,7 @@ add_files -tb input.data
 add_files -tb golden.data
 
 # Solution settings
-open_solution "solution1"
+open_solution "solution1" -reset
 set_part {xc7z020clg484-1}
 create_clock -period 10 -name default
 
@@ -21,6 +21,8 @@ csim_design
 csynth_design
 
 # Run Co-Simulation
-cosim_design
+# cosim_design -rtl verilog -tool xsim
+# cosim_design
+cosim_design -rtl verilog -tool xsim
 
 exit
