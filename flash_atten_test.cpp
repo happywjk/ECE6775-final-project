@@ -2,6 +2,7 @@
 // testbench.cpp
 //=========================================================================
 #include <stdio.h>
+#include <ap_fixed.h>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -18,7 +19,9 @@ const int THREE_H         = 3 * HIDDEN_SIZE;
 const int INPUT_SIZE  = BATCH_SIZE * CONTEXT_LENGTH * THREE_H;      // 12288
 const int OUTPUT_SIZE = BATCH_SIZE * CONTEXT_LENGTH * NUM_HEADS * HEAD_DIM;  // 4096
 
-extern "C" void top(float input_data[INPUT_SIZE], float output_data[OUTPUT_SIZE]);
+typedef ap_fixed<32,8, AP_TRN, AP_SAT> fp_t;
+
+extern "C" void top(fp_t input_data[INPUT_SIZE], fp_t output_data[OUTPUT_SIZE]);
 
 int main() {
   std::cout << "========================================" << std::endl;
@@ -32,9 +35,9 @@ int main() {
   std::cout << "  HEAD_DIM        = " << HEAD_DIM << std::endl;
   std::cout << "========================================" << std::endl;
 
-  static float input_data[INPUT_SIZE];   // 
-  static float output_data[OUTPUT_SIZE]; // 
-  static float golden_data[OUTPUT_SIZE]; // 
+  static fp_t input_data[INPUT_SIZE];   // fixed-point
+  static fp_t output_data[OUTPUT_SIZE]; // fixed-point
+  static fp_t golden_data[OUTPUT_SIZE]; // fixed-point
 
   // Initialize output to zero
   for (int i = 0; i < OUTPUT_SIZE; i++) {
@@ -55,7 +58,7 @@ int main() {
   int input_count = 0;
   std::string line;
   while (std::getline(infile, line) && input_count < INPUT_SIZE) {
-    input_data[input_count] = std::stof(line);
+    input_data[input_count] = (fp_t)std::stod(line);
     input_count++;
   }
   infile.close();
@@ -69,7 +72,7 @@ int main() {
   std::cout << "  Successfully read " << input_count << " input values." << std::endl;
   std::cout << "  First 5 values: ";
   for (int i = 0; i < 5; i++) {
-    std::cout << std::fixed << std::setprecision(4) << input_data[i] << " ";
+    std::cout << std::fixed << std::setprecision(4) << (double)input_data[i] << " ";
   }
   std::cout << std::endl;
 
@@ -84,7 +87,7 @@ int main() {
   std::cout << "  Design execution completed." << std::endl;
   std::cout << "  First 5 output values: ";
   for (int i = 0; i < 5; i++) {
-    std::cout << std::fixed << std::setprecision(4) << output_data[i] << " ";
+    std::cout << std::fixed << std::setprecision(4) << (double)output_data[i] << " ";
   }
   std::cout << std::endl;
 
@@ -100,7 +103,7 @@ int main() {
   }
 
   for (int i = 0; i < OUTPUT_SIZE; i++) {
-    outfile << std::setprecision(10) << output_data[i] << std::endl;
+    outfile << std::setprecision(10) << (double)output_data[i] << std::endl;
   }
   outfile.close();
   
@@ -117,7 +120,7 @@ int main() {
     
     int golden_count = 0;
     while (std::getline(goldenfile, line) && golden_count < OUTPUT_SIZE) {
-      golden_data[golden_count] = std::stof(line);
+      golden_data[golden_count] = (fp_t)std::stod(line);
       golden_count++;
     }
     goldenfile.close();
@@ -133,11 +136,11 @@ int main() {
       const double REL_TOLERANCE = 1e-5;
 
       for (int i = 0; i < OUTPUT_SIZE; i++) {
-        double abs_error = std::abs(output_data[i] - golden_data[i]);
+        double abs_error = std::abs((double)output_data[i] - (double)golden_data[i]);
         double rel_error = 0.0;
         
-        if (std::abs(golden_data[i]) > 1e-9) {
-          rel_error = abs_error / std::abs(golden_data[i]);
+        if (std::abs((double)golden_data[i]) > 1e-9) {
+          rel_error = abs_error / std::abs((double)golden_data[i]);
         }
         
         total_error += abs_error;
@@ -148,8 +151,8 @@ int main() {
         if (abs_error > TOLERANCE && rel_error > REL_TOLERANCE) {
           if (mismatch_count < 10) {
             std::cout << "    Mismatch at index " << i 
-                      << ": HLS=" << std::setprecision(6) << output_data[i]
-                      << ", Golden=" << golden_data[i]
+                      << ": HLS=" << std::setprecision(6) << (double)output_data[i]
+                      << ", Golden=" << (double)golden_data[i]
                       << ", AbsErr=" << abs_error
                       << ", RelErr=" << rel_error * 100 << "%" << std::endl;
           }
