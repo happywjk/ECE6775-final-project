@@ -4,9 +4,9 @@ from torch import nn
 import torch.nn.functional as F
 
 def quantize_tensor(x, dtype):
-    """量化张量到指定整数类型（int8/int16/int32）"""
+    """Quantize tensor to the specified integer type (int8/int16/int32)"""
     if dtype == torch.float32:
-        return x, 1.0  # 不量化
+        return x, 1.0  # No quantization
     qmin = torch.iinfo(dtype).min
     qmax = torch.iinfo(dtype).max
     max_val = torch.max(torch.abs(x))
@@ -15,30 +15,30 @@ def quantize_tensor(x, dtype):
     return x_q, scale
 
 def dequantize_tensor(x_q, scale, dtype):
-    """反量化回浮点"""
+    """Dequantize back to float"""
     if dtype == torch.float32:
         return x_q
     return x_q.float() * scale
 
 def test_attention_with_dtype(dtype=torch.float32):
-    # 基本参数
+    # Basic parameters
     batch_size, context_length, hidden_size, num_heads = 4, 16, 64, 4
     X = torch.randn(batch_size, context_length, 3 * hidden_size, dtype=torch.float32)
 
-    # 量化输入
+    # Quantize input
     X_q, scale = quantize_tensor(X, dtype)
     X_deq = dequantize_tensor(X_q, scale, dtype)
 
-    # 拆分 q, k, v
+    # Split q, k, v
     q, k, v = X_deq.split(hidden_size, dim=2)
     q = q.view(batch_size, context_length, num_heads, hidden_size // num_heads).transpose(1, 2)
     k = k.view(batch_size, context_length, num_heads, hidden_size // num_heads).transpose(1, 2)
     v = v.view(batch_size, context_length, num_heads, hidden_size // num_heads).transpose(1, 2)
 
-    # 计算注意力
+    # Compute attention
     attention = F.scaled_dot_product_attention(q, k, v, is_causal=False)
 
-    # 写入输入数据
+    # Write input data
     X_flat = X_q.flatten()
     with open("input.data", "w") as f:
         for val in X_flat:
@@ -47,18 +47,18 @@ def test_attention_with_dtype(dtype=torch.float32):
     print(f"Please run host.cpp using dtype={dtype}, then press Enter to continue...")
     input()
 
-    # 读取输出
+    # Read output
     output_data = []
     with open("output.data", "r") as f:
         for line in f:
             output_data.append(float(line.strip()))
     output_array = np.array(output_data).reshape(batch_size, num_heads, context_length, hidden_size // num_heads)
 
-    # 对比
+    # Compare
     output_array_torch = torch.tensor(output_array)
     np.testing.assert_allclose(output_array_torch.numpy(), attention.numpy(), rtol=1e-3, atol=1e-2)
     print("Test PASSED! The output matches the PyTorch reference.")
 
 if __name__ == "__main__":
-    # 可选类型：torch.float32, torch.int8, torch.int16, torch.int32
+    # Optional types: torch.float32, torch.int8, torch.int16, torch.int32
     test_attention_with_dtype(torch.int8)
