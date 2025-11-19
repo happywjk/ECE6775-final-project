@@ -9,13 +9,13 @@
 
 
 INC_PATH=/usr/include/vivado_hls
-CFLAGS = -I${INC_PATH} -DHLS_NO_XIL_FPO_LIB -O3
+CFLAGS = -I${INC_PATH} -DHLS_NO_XIL_FPO_LIB -O3 -std=c++11
 
 .PHONY: all sw fpga
 
 all: sw
 
-flashattention-arm: flash_atten.cpp flash_atten_test.cpp
+flashattention-arm: standard_atten_baseline.cpp flash_atten_test.cpp
 	g++ ${CFLAGS} $^ -o $@
 
 result/flashattention_arm_sim.txt: flashattention-arm
@@ -26,7 +26,7 @@ result/flashattention_arm_sim.txt: flashattention-arm
 sw: result/flashattention_arm_sim.txt
 	@echo "Result saved to $@"
 
-flashattention-fpga: host.cpp flash_atten.cpp
+flashattention-fpga: host.cpp standard_atten_baseline.cpp
 	@echo "Compiling host + FPGA DUT"
 	g++ ${CFLAGS} $^ -o $@
 	@echo "Make sure bitstream is loaded!"

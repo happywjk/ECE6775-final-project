@@ -4,11 +4,13 @@
 // Output: output_data [B, T, NH, HD] (flattened)
 // Implements: softmax(QK^T / sqrt(d)) V
 //===============================================================
+#include <hls_stream.h>
+#include <ap_int.h>
 #include <math.h>
 #include <stdint.h>
 
-// Match testbench type
-typedef float fp_t;
+// Match lab style: 32-bit stream word
+typedef ap_uint<32> bit32_t;
 
 static const int BATCH_SIZE      = 4;
 static const int CONTEXT_LENGTH  = 16;
@@ -20,12 +22,14 @@ static const int THREE_H   = 3 * HIDDEN_SIZE;
 static const int IN_ELEMS  = BATCH_SIZE * CONTEXT_LENGTH * THREE_H;              // 12288
 static const int OUT_ELEMS = BATCH_SIZE * CONTEXT_LENGTH * NUM_HEADS * HEAD_DIM; // 4096
 
+extern "C" {
+
 static inline float fast_exp(float x) {
   return expf(x);
 }
 
 // ------------------------------------------------------------
-// load Q,K,V from float input buffer
+// load Q,K,V
 // ------------------------------------------------------------
 static void load_and_rearrange_qkv(
     const float input_data[IN_ELEMS],
@@ -75,7 +79,7 @@ static void compute_attention_baseline(
   for (int b = 0; b < BATCH_SIZE; b++) {
     for (int h = 0; h < NUM_HEADS; h++) {
 
-      // S = Q K^T / sqrt(d)
+      // score matrix S = Q K^T / sqrt(d)
       for (int tq = 0; tq < CONTEXT_LENGTH; tq++) {
         for (int tk = 0; tk < CONTEXT_LENGTH; tk++) {
           float dot = 0.0f;
@@ -132,30 +136,44 @@ static void store_output(
 }
 
 // ------------------------------------------------------------
-// Top-level DUT: array interface matching baseline_test.cpp
+// Top-level DUT: stream interface like the BNN lab
 // ------------------------------------------------------------
-extern "C" void dut(fp_t input_data[IN_ELEMS],
-                    fp_t output_data[OUT_ELEMS])
+void dut(hls::stream<bit32_t> &strm_in,
+         hls::stream<bit32_t> &strm_out)
 {
+  float input_data[IN_ELEMS];
+  float output_data[OUT_ELEMS];
+
+  // Read IN_ELEMS floats from 32-bit stream
+  for (int i = 0; i < IN_ELEMS; i++) {
+    bit32_t word = strm_in.read();
+    union {
+      uint32_t u;
+      float    f;
+    } cvt;
+    cvt.u = (uint32_t)word;
+    input_data[i] = cvt.f;
+  }
+
   static float Q  [BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
   static float K  [BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
   static float V  [BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
   static float OUT[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
 
-  static float input_f[IN_ELEMS];
-  static float output_f[OUT_ELEMS];
-
-  // Copy input
-  for (int i = 0; i < IN_ELEMS; i++) {
-    input_f[i] = (float)input_data[i];
-  }
-
-  load_and_rearrange_qkv(input_f, Q, K, V);
+  load_and_rearrange_qkv(input_data, Q, K, V);
   compute_attention_baseline(Q, K, V, OUT);
-  store_output(OUT, output_f);
+  store_output(OUT, output_data);
 
-  // Copy output
+  // Write OUT_ELEMS floats back to 32-bit stream
   for (int i = 0; i < OUT_ELEMS; i++) {
-    output_data[i] = (fp_t)output_f[i];
+    union {
+      uint32_t u;
+      float    f;
+    } cvt;
+    cvt.f = output_data[i];
+    bit32_t word = (bit32_t)cvt.u;
+    strm_out.write(word);
   }
 }
+
+} // extern "C"

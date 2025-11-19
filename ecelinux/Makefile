@@ -21,7 +21,7 @@ TCL_SCRIPT=run.tcl
 
 all: csim
 
-flashattention: flash_atten.cpp flash_atten_test.cpp
+flashattention: standard_atten_baseline.cpp flash_atten_test.cpp
 	g++ ${CFLAGS} $^ -o $@ -lrt
 
 result/flashattention_csim.txt: flashattention

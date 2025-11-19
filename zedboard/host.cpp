@@ -102,6 +102,34 @@ int main() {
     }
   }
 
+  // Optional: compare with golden.data if present in current directory
+  {
+    std::ifstream gfin("golden.data");
+    if (gfin) {
+      size_t golden_count = 0;
+      size_t mismatches = 0;
+      double max_abs_err = 0.0;
+      for (size_t i = 0; i < out_elems; ++i) {
+        double g;
+        if (!(gfin >> g)) break;
+        golden_count++;
+        double diff = std::abs(output[i] - g);
+        double thresh = 1e-2 + 1e-3 * std::abs(g);
+        if (diff > thresh) {
+          mismatches++;
+          if (diff > max_abs_err) max_abs_err = diff;
+        }
+      }
+      if (golden_count == out_elems) {
+        if (mismatches == 0) {
+          std::cout << "CHECK PASSED\n";
+        } else {
+          std::cout << "CHECK FAILED: mismatches=" << mismatches
+                    << " max_abs_err=" << max_abs_err << "\n";
+        }
+      }
+    }
+  }
   std::cout << "Done. Wrote " << out_elems << " floats to output.data\n";
   return 0;
 }

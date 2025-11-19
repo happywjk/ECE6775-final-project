@@ -13,7 +13,7 @@ open_project ${hls_prj} -reset
 set_top dut
 
 # Add design and testbench files
-add_files flash_atten.cpp -cflags "-std=c++11"
+add_files standard_atten_baseline.cpp -cflags "-std=c++11"
 add_files -tb flash_atten_test.cpp -cflags "-std=c++11"
 add_files -tb input.data
 add_files -tb golden.data
