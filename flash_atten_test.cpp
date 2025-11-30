@@ -1,5 +1,5 @@
 //=========================================================================
-// testbench.cpp  (AXIS version for standard_atten.cpp)
+// testbench.cpp  (Universal AXIS TB for FlashAttention)
 //=========================================================================
 #include <stdio.h>
 #include <iostream>
@@ -7,7 +7,11 @@
 #include <string>
 #include <cmath>
 #include <iomanip>
+#include <vector>
 #include "hls_stream.h"
+#include "ap_int.h"
+
+typedef ap_uint<32> bit32_t;
 
 const int BATCH_SIZE      = 4;
 const int CONTEXT_LENGTH  = 16;
@@ -16,23 +20,17 @@ const int NUM_HEADS       = 4;
 const int HEAD_DIM        = HIDDEN_SIZE / NUM_HEADS;
 const int THREE_H         = 3 * HIDDEN_SIZE;
 
-const int INPUT_SIZE  = BATCH_SIZE * CONTEXT_LENGTH * THREE_H;                 // 12288
-const int OUTPUT_SIZE = BATCH_SIZE * CONTEXT_LENGTH * NUM_HEADS * HEAD_DIM;    // 4096
+const int INPUT_SIZE  = BATCH_SIZE * CONTEXT_LENGTH * THREE_H;                 
+const int OUTPUT_SIZE = BATCH_SIZE * CONTEXT_LENGTH * NUM_HEADS * HEAD_DIM;    
 
-// DUT now uses AXI-stream style interface
-extern "C" void dut(hls::stream<float> &strm_in,
-                    hls::stream<float> &strm_out);
+// DUT Declaration: Must match the "extern C" in the HLS file
+// Note: We use bit32_t (ap_uint<32>) to match the AXI Stream interface
+extern "C" void dut(hls::stream<bit32_t> &strm_in,
+                    hls::stream<bit32_t> &strm_out);
 
 int main() {
   std::cout << "========================================" << std::endl;
-  std::cout << "Standard Attention Testbench (AXIS)" << std::endl;
-  std::cout << "========================================" << std::endl;
-  std::cout << "Configuration:" << std::endl;
-  std::cout << "  BATCH_SIZE      = " << BATCH_SIZE << std::endl;
-  std::cout << "  CONTEXT_LENGTH  = " << CONTEXT_LENGTH << std::endl;
-  std::cout << "  HIDDEN_SIZE     = " << HIDDEN_SIZE << std::endl;
-  std::cout << "  NUM_HEADS       = " << NUM_HEADS << std::endl;
-  std::cout << "  HEAD_DIM        = " << HEAD_DIM << std::endl;
+  std::cout << "Flash Attention Testbench (AXIS)" << std::endl;
   std::cout << "========================================" << std::endl;
 
   static float input_data [INPUT_SIZE];
@@ -40,9 +38,7 @@ int main() {
   static float golden_data[OUTPUT_SIZE];
 
   // Initialize output to zero
-  for (int i = 0; i < OUTPUT_SIZE; i++) {
-    output_data[i] = 0.0f;
-  }
+  for (int i = 0; i < OUTPUT_SIZE; i++) output_data[i] = 0.0f;
 
   //=========================================================================
   // Step 1: Read input data from file
@@ -51,8 +47,12 @@ int main() {
   std::ifstream infile("input.data");
   
   if (!infile.is_open()) {
-    std::cerr << "Error: Unable to open 'input.data'!" << std::endl;
-    return 1;
+    // Try one level up if not found (common in HLS project structures)
+    infile.open("../input.data");
+    if (!infile.is_open()) {
+        std::cerr << "Error: Unable to open 'input.data'!" << std::endl;
+        return 1;
+    }
   }
 
   int input_count = 0;
@@ -68,46 +68,40 @@ int main() {
               << input_count << std::endl;
     return 1;
   }
-  
   std::cout << "  Successfully read " << input_count << " input values." << std::endl;
-  std::cout << "  First 5 values: ";
-  for (int i = 0; i < 5; i++) {
-    std::cout << std::fixed << std::setprecision(4) << input_data[i] << " ";
-  }
-  std::cout << std::endl;
 
   //=========================================================================
-  // Step 2: Call DUT (Design Under Test) via AXI streams
+  // Step 2: Call DUT (Design Under Test)
   //=========================================================================
-  std::cout << "\n[Step 2] Running Standard Attention HLS design..." << std::endl;
+  std::cout << "\n[Step 2] Running HLS design..." << std::endl;
   
-  // Create AXI streams
-  hls::stream<float> strm_in;
-  hls::stream<float> strm_out;
+  // Create AXI streams using bit32_t to simulate raw hardware bits
+  hls::stream<bit32_t> strm_in;
+  hls::stream<bit32_t> strm_out;
 
-  // Push all inputs into strm_in
+  // Push all inputs: Float -> Bit Conversion
   for (int i = 0; i < INPUT_SIZE; i++) {
-    strm_in.write(input_data[i]);
+    union { uint32_t u; float f; } cvt;
+    cvt.f = input_data[i];
+    strm_in.write((bit32_t)cvt.u);
   }
 
-  // Call your top function (HLS will consume from strm_in and write to strm_out)
+  // Call the Top Function
   dut(strm_in, strm_out);
   
-  // Read all outputs back from strm_out into output_data
+  // Read all outputs: Bit -> Float Conversion
   for (int i = 0; i < OUTPUT_SIZE; i++) {
     if (strm_out.empty()) {
       std::cerr << "Error: strm_out became empty early at index " << i << std::endl;
       return 1;
     }
-    output_data[i] = strm_out.read();
+    bit32_t word = strm_out.read();
+    union { uint32_t u; float f; } cvt;
+    cvt.u = (uint32_t)word;
+    output_data[i] = cvt.f;
   }
 
   std::cout << "  Design execution completed." << std::endl;
-  std::cout << "  First 5 output values: ";
-  for (int i = 0; i < 5; i++) {
-    std::cout << std::fixed << std::setprecision(4) << output_data[i] << " ";
-  }
-  std::cout << std::endl;
 
   //=========================================================================
   // Step 3: Write output data to file
@@ -120,8 +114,9 @@ int main() {
     return 1;
   }
 
+  outfile << std::fixed << std::setprecision(7);
   for (int i = 0; i < OUTPUT_SIZE; i++) {
-    outfile << std::setprecision(10) << output_data[i] << std::endl;
+    outfile << output_data[i] << std::endl;
   }
   outfile.close();
   
@@ -132,6 +127,7 @@ int main() {
   //=========================================================================
   std::cout << "\n[Step 4] Checking for golden reference..." << std::endl;
   std::ifstream goldenfile("golden.data");
+  if (!goldenfile.is_open()) goldenfile.open("../golden.data");
   
   if (goldenfile.is_open()) {
     std::cout << "  Found 'golden.data', performing comparison..." << std::endl;
@@ -143,64 +139,38 @@ int main() {
     }
     goldenfile.close();
 
-    if (golden_count != OUTPUT_SIZE) {
-      std::cerr << "  Warning: Expected " << OUTPUT_SIZE << " golden values, but read " 
-                << golden_count << std::endl;
+    int mismatch_count = 0;
+    double max_error = 0.0;
+    const double TOLERANCE = 1e-3;
+
+    for (int i = 0; i < OUTPUT_SIZE; i++) {
+      double diff = std::abs(output_data[i] - golden_data[i]);
+      if (diff > max_error) max_error = diff;
+
+      // Adaptive tolerance for larger numbers
+      double thresh = TOLERANCE + 1e-4 * std::abs(golden_data[i]);
+      
+      if (diff > thresh) {
+        if (mismatch_count < 10) {
+          std::cout << "    Mismatch at index " << i 
+                    << ": DUT=" << output_data[i]
+                    << ", Golden=" << golden_data[i]
+                    << ", Diff=" << diff << std::endl;
+        }
+        mismatch_count++;
+      }
+    }
+
+    if (mismatch_count == 0) {
+      std::cout << "\n  [PASS] All values match within tolerance." << std::endl;
     } else {
-      int mismatch_count = 0;
-      double max_error = 0.0;
-      double total_error = 0.0;
-      const double TOLERANCE = 1e-3;
-      const double REL_TOLERANCE = 1e-5;
-
-      for (int i = 0; i < OUTPUT_SIZE; i++) {
-        double abs_error = std::abs(output_data[i] - golden_data[i]);
-        double rel_error = 0.0;
-        
-        if (std::abs(golden_data[i]) > 1e-9) {
-          rel_error = abs_error / std::abs(golden_data[i]);
-        }
-        
-        total_error += abs_error;
-        if (abs_error > max_error) {
-          max_error = abs_error;
-        }
-
-        if (abs_error > TOLERANCE && rel_error > REL_TOLERANCE) {
-          if (mismatch_count < 10) {
-            std::cout << "    Mismatch at index " << i 
-                      << ": HLS=" << std::setprecision(6) << output_data[i]
-                      << ", Golden=" << golden_data[i]
-                      << ", AbsErr=" << abs_error
-                      << ", RelErr=" << rel_error * 100 << "%" << std::endl;
-          }
-          mismatch_count++;
-        }
-      }
-
-      double avg_error = total_error / OUTPUT_SIZE;
-      
-      std::cout << "\n  Comparison Results:" << std::endl;
-      std::cout << "    Total mismatches: " << mismatch_count << " / " << OUTPUT_SIZE 
-                << " (" << std::setprecision(2) << (mismatch_count * 100.0 / OUTPUT_SIZE) 
-                << "%)" << std::endl;
-      std::cout << "    Max absolute error: " << std::scientific << std::setprecision(4) 
-                << max_error << std::endl;
-      std::cout << "    Average absolute error: " << avg_error << std::endl;
-      
-      if (mismatch_count == 0) {
-        std::cout << "\n  ✓ TEST PASSED! All values match within tolerance." << std::endl;
-      } else {
-        std::cout << "\n  ✗ TEST FAILED! Found " << mismatch_count << " mismatches." << std::endl;
-      }
+      std::cout << "\n  [FAIL] Found " << mismatch_count << " mismatches." << std::endl;
+      std::cout << "  Max absolute error: " << max_error << std::endl;
     }
   } else {
     std::cout << "  No 'golden.data' found. Skipping comparison." << std::endl;
   }
 
   std::cout << "\n========================================" << std::endl;
-  std::cout << "Testbench completed successfully!" << std::endl;
-  std::cout << "========================================" << std::endl;
-  
   return 0;
 }

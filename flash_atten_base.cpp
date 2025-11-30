@@ -165,35 +165,51 @@ static void store_output(
 }
 
 // ------------------------------------------------------------
+// Memory simulation helpers (Stream <-> BRAM-like buffers)
+// ------------------------------------------------------------
+static void write_mem(hls::stream<bit32_t> &strm_in, float local_ram[IN_ELEMS]) {
+  for (int i = 0; i < IN_ELEMS; ++i) {
+    bit32_t word = strm_in.read();
+    union { uint32_t u; float f; } cvt;
+    cvt.u = (uint32_t)word;
+    local_ram[i] = cvt.f;
+  }
+}
+
+static void read_mem(const float local_ram[OUT_ELEMS], hls::stream<bit32_t> &strm_out) {
+  for (int i = 0; i < OUT_ELEMS; ++i) {
+    union { uint32_t u; float f; } cvt;
+    cvt.f = local_ram[i];
+    strm_out.write((bit32_t)cvt.u);
+  }
+}
+
+static void compute_engine(const float input_mem[IN_ELEMS], float output_mem[OUT_ELEMS]) {
+  static float Q  [BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
+  static float K  [BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
+  static float V  [BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
+  static float OUT[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
+
+  load_qkv(input_mem, Q, K, V);
+  flash_attention(Q, K, V, OUT);
+  store_output(OUT, output_mem);
+}
+
+// ------------------------------------------------------------
 // Top-level DUT — STREAM interface (unchanged from baseline)
 // ------------------------------------------------------------
 void dut(hls::stream<bit32_t> &strm_in,
          hls::stream<bit32_t> &strm_out)
 {
-  float input_data[IN_ELEMS];
-  float output_data[OUT_ELEMS];
+  static float main_memory_in[IN_ELEMS];
+  static float main_memory_out[OUT_ELEMS];
 
-  for (int i = 0; i < IN_ELEMS; ++i) {
-    bit32_t word = strm_in.read();
-    union { uint32_t u; float f; } cvt;
-    cvt.u = word;
-    input_data[i] = cvt.f;
-  }
-
-  static float Q[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
-  static float K[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
-  static float V[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
-  static float OUT[BATCH_SIZE][NUM_HEADS][CONTEXT_LENGTH][HEAD_DIM];
-
-  load_qkv(input_data, Q, K, V);
-  flash_attention(Q, K, V, OUT);
-  store_output(OUT, output_data);
-
-  for (int i = 0; i < OUT_ELEMS; ++i) {
-    union { uint32_t u; float f; } cvt;
-    cvt.f = output_data[i];
-    strm_out.write((bit32_t)cvt.u);
-  }
+  // 1) Stream -> Memory
+  write_mem(strm_in, main_memory_in);
+  // 2) Compute (Memory -> Logic -> Memory)
+  compute_engine(main_memory_in, main_memory_out);
+  // 3) Memory -> Stream
+  read_mem(main_memory_out, strm_out);
 }
 
 } // extern "C"
