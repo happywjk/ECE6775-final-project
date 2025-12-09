@@ -5,14 +5,19 @@
 // Output: output_data [B, T, NH, HD] (flattened)
 //===============================================================
 #include <hls_stream.h>
-#include <ap_int.h>
 #include <math.h>
 #include <stdint.h>
 #ifdef __SYNTHESIS__
 #include <hls_math.h>
 #endif
 
-typedef ap_uint<32> bit32_t;
+typedef int8_t data_t;
+
+static inline data_t float_to_int8(float v) {
+    if (v > 127.0f)  return 127;
+    if (v < -128.0f) return -128;
+    return static_cast<data_t>(v);
+}
 
 static const int BATCH_SIZE      = 4;
 static const int CONTEXT_LENGTH  = 16;
@@ -38,22 +43,19 @@ static inline float fast_exp(float x) {
 // ------------------------------------------------------------
 // 1. Memory Simulation Modules
 // ------------------------------------------------------------
-static void write_mem(hls::stream<bit32_t> &strm_in, float local_ram[IN_ELEMS]) {
+static void write_mem(hls::stream<data_t> &strm_in, float local_ram[IN_ELEMS]) {
     for (int i = 0; i < IN_ELEMS; ++i) {
         #pragma HLS PIPELINE II=1
-        bit32_t word = strm_in.read();
-        union { uint32_t u; float f; } cvt;
-        cvt.u = word;
-        local_ram[i] = cvt.f;
+        data_t word = strm_in.read();
+        local_ram[i] = static_cast<float>(word);
     }
 }
 
-static void read_mem(float local_ram[OUT_ELEMS], hls::stream<bit32_t> &strm_out) {
+static void read_mem(float local_ram[OUT_ELEMS], hls::stream<data_t> &strm_out) {
     for (int i = 0; i < OUT_ELEMS; ++i) {
         #pragma HLS PIPELINE II=1
-        union { uint32_t u; float f; } cvt;
-        cvt.f = local_ram[i];
-        strm_out.write((bit32_t)cvt.u);
+        data_t quantized = float_to_int8(local_ram[i]);
+        strm_out.write(quantized);
     }
 }
 
@@ -161,8 +163,8 @@ static void store_output(
 // ------------------------------------------------------------
 // 3. Top-level DUT
 // ------------------------------------------------------------
-void dut(hls::stream<bit32_t> &strm_in,
-         hls::stream<bit32_t> &strm_out)
+void dut(hls::stream<data_t> &strm_in,
+         hls::stream<data_t> &strm_out)
 {
   #pragma HLS INTERFACE axis port=strm_in
   #pragma HLS INTERFACE axis port=strm_out

@@ -4,7 +4,7 @@
 # @brief: A Tcl script for synthesizing the attention design.
 
 # Project name
-set hls_prj out.prj
+set hls_prj out_base.prj
 
 # Open/reset the project
 open_project ${hls_prj} -reset
@@ -35,5 +35,5 @@ csim_design -O
 # Synthesize the design
 csynth_design
 # Co-simulate the design
-#cosim_design
+cosim_design
 exit
