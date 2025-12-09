@@ -177,9 +177,9 @@ static void store_output(
 void dut(hls::stream<bit32_t> &strm_in,
          hls::stream<bit32_t> &strm_out)
 {
-  #pragma HLS INTERFACE axis port=strm_in
-  #pragma HLS INTERFACE axis port=strm_out
-  #pragma HLS INTERFACE ap_ctrl_none port=return
+  // #pragma HLS INTERFACE axis port=strm_in
+  // #pragma HLS INTERFACE axis port=strm_out
+  // #pragma HLS INTERFACE ap_ctrl_none port=return
 
   // 1. 定义模拟 DDR 的大数组
   static float main_memory_in[IN_ELEMS];

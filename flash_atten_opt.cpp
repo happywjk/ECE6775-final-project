@@ -152,6 +152,7 @@ static void compute_block_attention(
         // Find max
         float row_max_val = -1e30f;
         for (int j = 0; j < BLOCK_T; ++j) {
+            #pragma HLS UNROLL
             if (S_tile[i][j] > row_max_val) row_max_val = S_tile[i][j];
         }
 
@@ -164,6 +165,7 @@ static void compute_block_attention(
         // Update l
         float row_sum_exp = 0.0f;
         for (int j = 0; j < BLOCK_T; ++j) {
+            #pragma HLS UNROLL
             row_sum_exp += EXP(S_tile[i][j] - row_max_val);
         }
         
@@ -270,9 +272,9 @@ static void read_mem(const float local_ram[OUT_ELEMS], hls::stream<bit32_t> &str
 void dut(hls::stream<bit32_t> &strm_in,
          hls::stream<bit32_t> &strm_out)
 {
-  #pragma HLS INTERFACE axis port=strm_in
-  #pragma HLS INTERFACE axis port=strm_out
-  #pragma HLS INTERFACE ap_ctrl_none port=return
+//   #pragma HLS INTERFACE axis port=strm_in
+//   #pragma HLS INTERFACE axis port=strm_out
+//   #pragma HLS INTERFACE ap_ctrl_none port=return
 
   static float main_memory_in[IN_ELEMS];
   static float main_memory_out[OUT_ELEMS];
