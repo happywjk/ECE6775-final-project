@@ -38,7 +38,7 @@ int main() {
   // Read input.data (text floats)
   // -----------------------------
   {
-    std::ifstream fin("input.data");
+    std::ifstream fin("../../../../input.data");
     if (!fin) {
       std::cerr << "Failed to open input.data\n";
       return 1;
@@ -90,7 +90,7 @@ int main() {
   // Write output.data
   // -----------------------------
   {
-    std::ofstream fout("output.data");
+    std::ofstream fout("../../../../output.data");
     if (!fout) {
       std::cerr << "Failed to open output.data for write\n";
       return 1;
@@ -102,9 +102,9 @@ int main() {
     }
   }
 
-  // Optional: compare with golden.data if present in current directory
+  // Optional: compare with golden.data if present
   {
-    std::ifstream gfin("golden.data");
+    std::ifstream gfin("../../../../golden.data");
     if (gfin) {
       size_t golden_count = 0;
       size_t mismatches = 0;
