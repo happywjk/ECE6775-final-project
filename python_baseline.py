@@ -20,7 +20,7 @@ def dequantize_tensor(x_q, scale, dtype):
         return x_q
     return x_q.float() * scale
 
-def test_attention_with_dtype(dtype=torch.float32):
+def test_attention_with_dtype(dtype=torch.int8):
     torch.manual_seed(42)
     np.random.seed(42)
     # Basic parameters
@@ -29,7 +29,8 @@ def test_attention_with_dtype(dtype=torch.float32):
 
     # Quantize input
     X_q, scale = quantize_tensor(X, dtype)
-    X_deq = dequantize_tensor(X_q, scale, dtype)
+    # For int8 HW path we do NOT rescale back; hardware consumes raw int8 values directly.
+    X_deq = X_q.float() if dtype != torch.float32 else X_q
 
     # Split q, k, v
     q, k, v = X_deq.split(hidden_size, dim=2)
@@ -71,4 +72,4 @@ def test_attention_with_dtype(dtype=torch.float32):
 
 if __name__ == "__main__":
     # Optional types: torch.float32, torch.int8, torch.int16, torch.int32
-    test_attention_with_dtype(torch.float32)
+    test_attention_with_dtype(torch.int8)

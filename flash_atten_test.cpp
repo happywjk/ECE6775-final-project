@@ -1,18 +1,17 @@
 //=========================================================================
-// testbench.cpp  (Float IO Version - Matches Kernel)
+// testbench.cpp  (int8 IO Version - Matches Kernel)
 //=========================================================================
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <cmath>
 #include <iomanip>
 #include <vector>
+#include <cstdlib>
 #include "hls_stream.h"
-#include "ap_int.h"
+#include <cstdint>
 
-// Kernel uses standard float now, so no ap_fixed needed here
-typedef ap_uint<32> bit32_t;
+typedef int8_t data_t;
 
 const int BATCH_SIZE      = 4;
 const int CONTEXT_LENGTH  = 16;
@@ -24,20 +23,20 @@ const int THREE_H         = 3 * HIDDEN_SIZE;
 const int INPUT_SIZE  = BATCH_SIZE * CONTEXT_LENGTH * THREE_H;                 
 const int OUTPUT_SIZE = BATCH_SIZE * CONTEXT_LENGTH * NUM_HEADS * HEAD_DIM;    
 
-extern "C" void dut(hls::stream<bit32_t> &strm_in,
-                    hls::stream<bit32_t> &strm_out);
+extern "C" void dut(hls::stream<data_t> &strm_in,
+                    hls::stream<data_t> &strm_out);
 
 int main() {
   std::cout << "========================================" << std::endl;
-  std::cout << "Flash Attention Testbench (Float)" << std::endl;
+  std::cout << "Flash Attention Testbench (int8)" << std::endl;
   std::cout << "========================================" << std::endl;
 
-  static float input_data [INPUT_SIZE];
-  static float output_data[OUTPUT_SIZE];
-  static float golden_data[OUTPUT_SIZE];
+  static data_t input_data [INPUT_SIZE];
+  static data_t output_data[OUTPUT_SIZE];
+  static data_t golden_data[OUTPUT_SIZE];
 
   // Initialize output
-  for (int i = 0; i < OUTPUT_SIZE; i++) output_data[i] = 0.0f;
+  for (int i = 0; i < OUTPUT_SIZE; i++) output_data[i] = 0;
 
   //=========================================================================
   // Step 1: Read input data (Float)
@@ -56,7 +55,7 @@ int main() {
   int input_count = 0;
   std::string line;
   while (std::getline(infile, line) && input_count < INPUT_SIZE) {
-    input_data[input_count] = std::stof(line);
+    input_data[input_count] = static_cast<data_t>(std::stoi(line));
     input_count++;
   }
   infile.close();
@@ -73,14 +72,12 @@ int main() {
   //=========================================================================
   std::cout << "\n[Step 2] Running HLS design..." << std::endl;
   
-  hls::stream<bit32_t> strm_in;
-  hls::stream<bit32_t> strm_out;
+  hls::stream<data_t> strm_in;
+  hls::stream<data_t> strm_out;
 
-  // 1. Send Float Bits
+  // 1. Send int8 values
   for (int i = 0; i < INPUT_SIZE; i++) {
-    union { uint32_t u; float f; } cvt;
-    cvt.f = input_data[i];
-    strm_in.write((bit32_t)cvt.u);
+    strm_in.write(input_data[i]);
   }
 
   // 2. Call DUT
@@ -92,11 +89,7 @@ int main() {
       std::cerr << "Error: strm_out became empty early at index " << i << std::endl;
       return 1;
     }
-    bit32_t word = strm_out.read();
-    
-    union { uint32_t u; float f; } cvt;
-    cvt.u = (uint32_t)word;
-    output_data[i] = cvt.f;
+    output_data[i] = strm_out.read();
   }
 
   std::cout << "  Design execution completed." << std::endl;
@@ -112,9 +105,8 @@ int main() {
     return 1;
   }
 
-  outfile << std::fixed << std::setprecision(7);
   for (int i = 0; i < OUTPUT_SIZE; i++) {
-    outfile << output_data[i] << std::endl;
+    outfile << static_cast<int>(output_data[i]) << std::endl;
   }
   outfile.close();
   
@@ -130,26 +122,22 @@ int main() {
     
     int golden_count = 0;
     while (std::getline(goldenfile, line) && golden_count < OUTPUT_SIZE) {
-      golden_data[golden_count] = std::stof(line);
+      golden_data[golden_count] = static_cast<data_t>(std::stoi(line));
       golden_count++;
     }
     goldenfile.close();
 
     int mismatch_count = 0;
-    double max_error = 0.0;
-    const double TOLERANCE = 1e-3;
+    int max_error = 0;
 
     for (int i = 0; i < OUTPUT_SIZE; i++) {
-      double diff = std::abs(output_data[i] - golden_data[i]);
+      int diff = std::abs(static_cast<int>(output_data[i]) - static_cast<int>(golden_data[i]));
       if (diff > max_error) max_error = diff;
-
-      double thresh = TOLERANCE + 1e-3 * std::abs(golden_data[i]);
-      
-      if (diff > thresh) {
+      if (diff != 0) {
         if (mismatch_count < 10) {
           std::cout << "    Mismatch at index " << i 
-                    << ": DUT=" << output_data[i]
-                    << ", Golden=" << golden_data[i]
+                    << ": DUT=" << static_cast<int>(output_data[i])
+                    << ", Golden=" << static_cast<int>(golden_data[i])
                     << ", Diff=" << diff << std::endl;
         }
         mismatch_count++;

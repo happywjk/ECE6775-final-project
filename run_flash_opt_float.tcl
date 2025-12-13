@@ -1,5 +1,5 @@
 #=============================================================================
-# run.tcl 
+# run_flash_opt.tcl 
 #=============================================================================
 # @brief: A Tcl script for synthesizing the baseline digit recongnition design.
 
@@ -13,7 +13,7 @@ open_project ${hls_prj} -reset
 set_top dut
 
 # Add design and testbench files
-add_files flash_atten.cpp -cflags "-std=c++11"
+add_files flash_atten_opt_float.cpp -cflags "-std=c++11"
 add_files -tb flash_atten_test.cpp -cflags "-std=c++11"
 add_files -tb input.data
 add_files -tb golden.data
@@ -35,5 +35,5 @@ csim_design -O
 # Synthesize the design
 csynth_design
 # Co-simulate the design
-#cosim_design
+# cosim_design
 exit
