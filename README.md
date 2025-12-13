@@ -54,6 +54,7 @@ Different TCL scripts are used to run different versions of the design:
 | `run.tcl`                 | FlashAttention **unoptimized version**            |
 | `run_flash_opt.tcl`       | **INT8** optimized FlashAttention implementation  |
 | `run_flash_opt_float.tcl` | **Float** optimized FlashAttention implementation |
+| `run_bistream.sh`         | generate bitstream                                |
 
 Example command:
 
